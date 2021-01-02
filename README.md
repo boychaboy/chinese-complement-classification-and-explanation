@@ -14,26 +14,12 @@ commmit convention [Conventional Commits/Angular convention](https://github.com/
 - style: Changes that do not affect the meaning of the code (white-space, formatting, missing semi-colons, etc)
 - test: Adding missing tests or correcting existing tests
 
-위의 convention을 git commit message template 으로 적용하시려면 아래의 명령어를 실행해주세요.
-
-```shell
-git config commit.template .gitmessage
-```
-
-각 커밋 메세지 앞에 해당하는 카테고리를 적절하게 사용해서 붙여주세요. 예시:
-
-```
-feat: MLM masking logic 추가
-fix: dropout 적용되지 않은 버그 수정
-...
-```
-
 ## Requirements
 ```shell script
-conda create -n expl-reg python==3.7.4
-conda activate expl-reg
-# modify CUDA version as yours
-conda install pytorch=0.4.1 cuda90 -c pytorch
+conda create -n hiexpl-env python==3.7.4
+conda activate hiexpl-env
+# modify CUDA version as yours -> use cuda92(cuda90 : error!)
+conda install pytorch=0.4.1 cuda92 -c pytorch
 pip install nltk numpy scikit-learn scikit-image matplotlib torchtext
 # requirements from pytorch-transformers
 pip install tokenizers==0.0.11 boto3 filelock requests tqdm regex sentencepiece sacremoses
