@@ -1,5 +1,6 @@
 # Chinese NLP explanation
-Based on code for [Contextualizing hate speech models with explanations](https://github.com/BrendanKennedy/contextualizing-hate-speech-models-with-explanations)
+Based on code for [Contextualizing hate speech models with explanations](https://github.com/BrendanKennedy/contextualizing-hate-speech-models-with-explanations)for explaining Chinese Complement Classification Model
+Implementation for explaining [Chinese Complement Classification Model]
 
 ## Commit Rules
 commmit convention [Conventional Commits/Angular convention](https://github.com/angular/angular/blob/22b96b9/CONTRIBUTING.md#type) 을 따릅니다.
