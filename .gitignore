@@ -1,5 +1,8 @@
 # boychaboy
 runs/
+figs/
+scripts/*.sh
+*.sh
 
 
 ### Python ###

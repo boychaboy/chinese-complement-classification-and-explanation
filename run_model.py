@@ -163,7 +163,7 @@ def main():
     parser.add_argument("--lm_dir", default='runs/lm')
 
     # if configured, only generate explanations for instances with given line numbers
-    parser.add_argument("--hiex_idxs", default=None)
+    parser.add_argument("--hiex_idxs", action='store_true')
     # if true, use absolute values of explanations for hierarchical clustering
     parser.add_argument("--hiex_abs", action='store_true')
 
@@ -714,6 +714,7 @@ def explain(args, model, processor, tokenizer, output_mode, label_list, device):
         if not args.hiex:
             explainer.word_level_explanation_bert(input_ids, input_mask, segment_ids, label_ids)
         else:
+            print("hi")
             explainer.hierarchical_explanation_bert(input_ids, input_mask, segment_ids, label_ids)
     if hasattr(explainer, 'dump'):
         explainer.dump()

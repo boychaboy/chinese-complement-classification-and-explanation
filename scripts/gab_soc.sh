@@ -12,7 +12,7 @@ fi
 if [[ -n "$2" ]]; then
     max_seeds=$2
 else
-    max_seeds=1
+    max_seeds=10
 fi
 
 

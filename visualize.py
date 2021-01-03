@@ -128,9 +128,8 @@ def visualize_sequences(txt_file, model_name, method_name):
 if __name__ == '__main__':
     if not os.path.isdir('figs/'): os.mkdir('figs/')
 
+    tab_file_dir = 'runs/majority_gab_es_vanilla_bal_seed_0/temp.tmp'
+    visualize_tabs(tab_file_dir, 'bert', 'soc_vanilla_bal_0')
 
-
-    tab_file_dir = 'runs/majority_gab_es_vanilla_bal_seed_0/soc.nb10.h10.3.pkl'
-    visualize_tabs(tab_file_dir, 'bert', 'soc_vanilla_bal_3')
-    tab_file_dir = 'runs/majority_gab_es_reg_nb5_h10_is_bal_seed_3/soc.nb10.h10.3.pkl'
-    visualize_tabs(tab_file_dir, 'bert', 'soc_reg_bal_3')
+    # tab_file_dir = 'runs/majority_gab_es_reg_nb5_h10_is_bal_seed_3/soc.nb10.h10.3.pkl'
+    # visualize_tabs(tab_file_dir, 'bert', 'soc_reg_bal_3')
