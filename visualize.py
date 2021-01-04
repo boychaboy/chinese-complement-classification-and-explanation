@@ -69,7 +69,7 @@ def plot_score_array(layers, score_array, sent_words, model_pred=None):
                            fontsize=fontsize, fontproperties=fontprop)
     return im
 
-def visualize_tabs(tab_file, model_name, method_name, task='gab'):
+def visualize_tabs(tab_file, model_name, method_name, task='gab', compl=0):
     """
     visualizing hierarchical explanations, take as input the output pkl of hierarchical explanation algorithms
     :param tab_file:
@@ -82,6 +82,7 @@ def visualize_tabs(tab_file, model_name, method_name, task='gab'):
         2: '出来',
         3: '起来'
         }
+    label = labels[compl]
 
     f = open(tab_file, 'rb')
     data = pickle.load(f)
@@ -118,7 +119,8 @@ def visualize_tabs(tab_file, model_name, method_name, task='gab'):
 
     else:
         for i, entry in enumerate(data):
-            sent_words = entry['text'].replace("[MASK]", labels[entry['label']]).split()
+            # sent_words = entry['text'].replace("[MASK]", labels[entry['label']]).split()
+            sent_words = entry['text'].split()
             score_array = entry['tab']
             label_name = entry['label']
             model_pred = entry.get('pred', None)
@@ -138,9 +140,20 @@ def visualize_tabs(tab_file, model_name, method_name, task='gab'):
 
             score_array, sent_words = new_score_array, new_sent_words
 
+            if label == 1:
+                title_label = "Label : " + label
+            else:
+                title_label = "Label : not " + label
+            if model_pred == 1:
+                model_label = "Model Predict : " + label
+            else:
+                model_label = "Model Predict : not " + label
+            
+            title_name = title_label + ' / ' + model_label
+            
             if score_array.shape[1] <= 400:
                 im = plot_score_array(None, score_array, sent_words, model_pred)
-                plt.title(labels[label_name], fontsize=14, fontproperties=fontprop)
+                plt.title(title_name, fontsize=14, fontproperties=fontprop)
                 dir = 'figs/{}_{}'.format(model_name, method_name)
                 if not os.path.isdir(dir): os.mkdir(dir)
                 plt.savefig('figs/{}_{}/fig_{}.png'.format(model_name, method_name, i), bbox_inches='tight')
@@ -170,8 +183,11 @@ def visualize_sequences(txt_file, model_name, method_name, task='gab'):
 if __name__ == '__main__':
     if not os.path.isdir('figs/'): os.mkdir('figs/')
 
-    tab_file_dir = 'runs/compl_0/compl.pkl'
-    visualize_tabs(tab_file_dir, 'compl', 'vanilla_0_hiex_test', 'compl')
+    # tab_file_dir = 'runs/compl_0/compl.pkl'
+    # visualize_tabs(tab_file_dir, 'compl', 'vanilla_0_hiex_test', 'compl')
+
+    tab_file_dir = 'runs/complement_binary_0/compl_bin_0_hiex.pkl' 
+    visualize_tabs(tab_file_dir, 'compl', 'binary_0_hiex', 'compl', 0)
 
     # tab_file_dir = 'runs/compl_0/compl_seq.txt'
     # visualize_sequences(tab_file_dir, 'compl', 'vanilla_0_seq')

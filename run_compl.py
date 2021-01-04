@@ -48,7 +48,7 @@ from bert.modeling import BertForSequenceClassification, BertConfig
 from bert.tokenization import BertTokenizer
 from bert.optimization import BertAdam, WarmupLinearSchedule
 
-from loader import GabProcessor, WSProcessor, NytProcessor, ComplProcessor, convert_examples_to_features
+from loader import GabProcessor, WSProcessor, NytProcessor, ComplProcessor, ComplBinProcessor, convert_examples_to_features
 from utils.config import configs, combine_args
 
 # for hierarchical explanation algorithms
@@ -62,10 +62,10 @@ def simple_accuracy(preds, labels):
 
 def acc_and_f1(preds, labels, pred_probs):
     acc = simple_accuracy(preds, labels)
-    f1 = f1_score(y_true=labels, y_pred=preds, average='micro')
-    p, r = precision_score(y_true=labels, y_pred=preds, average='micro'), recall_score(y_true=labels, y_pred=preds, average='micro')
+    f1 = f1_score(y_true=labels, y_pred=preds, average='macro')
+    p, r = precision_score(y_true=labels, y_pred=preds, average='macro'), recall_score(y_true=labels, y_pred=preds, average='macro')
     try:
-        roc = roc_auc_score(y_true=labels, y_score=pred_probs[:,1], average='micro')
+        roc = roc_auc_score(y_true=labels, y_score=pred_probs[:,1], average='macro')
     except ValueError:
         roc = 0.
     return {
@@ -94,7 +94,6 @@ def compute_metrics(task_name, preds, labels, pred_probs):
 
 def main():
     parser = argparse.ArgumentParser()
-
     ## Required parameters
     parser.add_argument("--data_dir",
                         default=None,
@@ -243,7 +242,10 @@ def main():
                              "Positive power of 2: static loss scaling value.\n")
     parser.add_argument('--server_ip', type=str, default='', help="Can be used for distant debugging.")
     parser.add_argument('--server_port', type=str, default='', help="Can be used for distant debugging.")
+    
+    # Boychaboy added arguments for complement classifier
     parser.add_argument('--gpu_id', type=str, default='0')
+    parser.add_argument('--complement', type=int, default=0)
 
     args = parser.parse_args()
 
@@ -261,14 +263,16 @@ def main():
         'gab': GabProcessor,
         'ws': WSProcessor,
         'nyt': NytProcessor,
-        'compl': ComplProcessor
+        'compl': ComplProcessor,
+        'compl_bin': ComplBinProcessor
     }
 
     output_modes = {
         'gab': 'classification',
         'ws': 'classification',
         'nyt': 'classification',
-        'compl': 'classification'
+        'compl': 'classification',
+        'compl_bin': 'classification'
     }
 
     os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
@@ -323,7 +327,7 @@ def main():
         raise ValueError("Task not found: %s" % (task_name))
 
     tokenizer = BertTokenizer.from_pretrained(args.bert_model, do_lower_case=args.do_lower_case)
-    processor = processors[task_name](configs, tokenizer=tokenizer)
+    processor = processors[task_name](configs, tokenizer=tokenizer, complement = args.complement)
     output_mode = output_modes[task_name]
 
     label_list = processor.get_labels()
@@ -530,6 +534,7 @@ def main():
 
 def validate(args, model, processor, tokenizer, output_mode, label_list, device, num_labels,
              task_name, tr_loss, global_step, epoch, explainer=None):
+    
     if not args.test:
         eval_examples = processor.get_dev_examples(args.data_dir)
     else:
@@ -723,7 +728,6 @@ def explain(args, model, processor, tokenizer, output_mode, label_list, device):
         if not args.hiex:
             explainer.word_level_explanation_bert(input_ids, input_mask, segment_ids, label_ids)
         else:
-            print("hi")
             explainer.hierarchical_explanation_bert(input_ids, input_mask, segment_ids, label_ids)
     if hasattr(explainer, 'dump'):
         explainer.dump()

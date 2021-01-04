@@ -63,7 +63,7 @@ class GabProcessor(DataProcessor):
         return self._create_examples(data_dir, 'train', label)
 
     def get_dev_examples(self, data_dir, label=None):
-        return self._create_examples(data_dir, 'dev', label)
+        return self._create_examples(data_dir, 'val', label)
 
     def get_test_examples(self, data_dir, label=None):
         return self._create_examples(data_dir, 'test', label)
