@@ -7,7 +7,11 @@ https://openreview.net/pdf?id=BkxRRkSKwr, Appendix C
 import pickle
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib.font_manager as fm
 import os
+
+path = '/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc'
+fontprop = fm.FontProperties(fname=path, size=16)
 
 
 def plot_score_array(layers, score_array, sent_words, model_pred=None):
@@ -50,7 +54,7 @@ def plot_score_array(layers, score_array, sent_words, model_pred=None):
                 for j in range(start, stop + 1):
                     color = (0.0, 0.0, 0.0)
                     ax.text(j, cnt, sent_words[j], ha='center', va='center', fontsize=11 if len(sent_words[j]) < 10 else 8,
-                            color=color)
+                            color=color, fontproperties=fontprop)
             cnt += 1
     else:
         for i in range(score_array.shape[0]):
@@ -62,10 +66,10 @@ def plot_score_array(layers, score_array, sent_words, model_pred=None):
                     if len(sent_words[j]) >= 12:
                         fontsize = 6
                     ax.text(j, i, sent_words[j], ha='center', va='center',
-                           fontsize=fontsize)
+                           fontsize=fontsize, fontproperties=fontprop)
     return im
 
-def visualize_tabs(tab_file, model_name, method_name):
+def visualize_tabs(tab_file, model_name, method_name, task='gab'):
     """
     visualizing hierarchical explanations, take as input the output pkl of hierarchical explanation algorithms
     :param tab_file:
@@ -73,38 +77,76 @@ def visualize_tabs(tab_file, model_name, method_name):
     :param method_name:
     :return:
     """
+    labels = { 0: '下去',
+        1: '下来',
+        2: '出来',
+        3: '起来'
+        }
+
     f = open(tab_file, 'rb')
     data = pickle.load(f)
-    for i,entry in enumerate(data):
-        sent_words = entry['text'].split()
-        score_array = entry['tab']
-        label_name = entry['label']
-        model_pred = entry.get('pred', None)
-        if score_array.ndim == 1:
-            score_array = score_array.reshape(1,-1)
+    # import ipdb; ipdb.set_trace()
+    if not task == 'compl':
+        for i, entry in enumerate(data):
+            sent_words = entry['text'].split()
+            score_array = entry['tab']
+            label_name = entry['label']
+            model_pred = entry.get('pred', None)
+            if score_array.ndim == 1:
+                score_array = score_array.reshape(1,-1)
 
-        new_score_array = []
-        new_sent_words = []
-        prev_word = ''
-        for xj in range(score_array.shape[1]):
-            word = sent_words[xj]
-            if word != prev_word:
-                prev_word = word
-                new_sent_words.append(word)
-                new_score_array.append(score_array[:,xj])
-        new_score_array = np.stack(new_score_array,0).transpose((1,0))
+            new_score_array = []
+            new_sent_words = []
+            prev_word = ''
+            for xj in range(score_array.shape[1]):
+                word = sent_words[xj]
+                if word != prev_word:
+                    prev_word = word
+                    new_sent_words.append(word)
+                    new_score_array.append(score_array[:,xj])
+            new_score_array = np.stack(new_score_array,0).transpose((1,0))
 
-        score_array, sent_words = new_score_array, new_sent_words
+            score_array, sent_words = new_score_array, new_sent_words
 
-        if score_array.shape[1] <= 400:
-            im = plot_score_array(None, score_array, sent_words, model_pred)
-            plt.title(label_name, fontsize=14)
-            dir = 'figs/{}_{}'.format(model_name, method_name)
-            if not os.path.isdir(dir): os.mkdir(dir)
-            plt.savefig('figs/{}_{}/fig_{}.png'.format(model_name, method_name, i), bbox_inches='tight')
-            plt.close()
+            if score_array.shape[1] <= 400:
+                im = plot_score_array(None, score_array, sent_words, model_pred)
+                plt.title(label_name, fontsize=14, fontproperties=fontprop)
+                dir = 'figs/{}_{}'.format(model_name, method_name)
+                if not os.path.isdir(dir): os.mkdir(dir)
+                plt.savefig('figs/{}_{}/fig_{}.png'.format(model_name, method_name, i), bbox_inches='tight')
+                plt.close()
 
-def visualize_sequences(txt_file, model_name, method_name):
+    else:
+        for i, entry in enumerate(data):
+            sent_words = entry['text'].replace("[MASK]", labels[entry['label']]).split()
+            score_array = entry['tab']
+            label_name = entry['label']
+            model_pred = entry.get('pred', None)
+            if score_array.ndim == 1:
+                score_array = score_array.reshape(1,-1)
+
+            new_score_array = []
+            new_sent_words = []
+            prev_word = ''
+            for xj in range(score_array.shape[1]):
+                word = sent_words[xj]
+                if word != prev_word:
+                    prev_word = word
+                    new_sent_words.append(word)
+                    new_score_array.append(score_array[:,xj])
+            new_score_array = np.stack(new_score_array,0).transpose((1,0))
+
+            score_array, sent_words = new_score_array, new_sent_words
+
+            if score_array.shape[1] <= 400:
+                im = plot_score_array(None, score_array, sent_words, model_pred)
+                plt.title(labels[label_name], fontsize=14, fontproperties=fontprop)
+                dir = 'figs/{}_{}'.format(model_name, method_name)
+                if not os.path.isdir(dir): os.mkdir(dir)
+                plt.savefig('figs/{}_{}/fig_{}.png'.format(model_name, method_name, i), bbox_inches='tight')
+                plt.close()
+
+def visualize_sequences(txt_file, model_name, method_name, task='gab'):
     f = open(txt_file)
     for i, line in enumerate(f.readlines()):
         score_array, sent_words = [], []
@@ -128,8 +170,11 @@ def visualize_sequences(txt_file, model_name, method_name):
 if __name__ == '__main__':
     if not os.path.isdir('figs/'): os.mkdir('figs/')
 
-    tab_file_dir = 'runs/majority_gab_es_vanilla_bal_seed_0/temp.tmp'
-    visualize_tabs(tab_file_dir, 'bert', 'soc_vanilla_bal_0')
+    tab_file_dir = 'runs/compl_0/compl.pkl'
+    visualize_tabs(tab_file_dir, 'compl', 'vanilla_0_hiex_test', 'compl')
+
+    # tab_file_dir = 'runs/compl_0/compl_seq.txt'
+    # visualize_sequences(tab_file_dir, 'compl', 'vanilla_0_seq')
 
     # tab_file_dir = 'runs/majority_gab_es_reg_nb5_h10_is_bal_seed_3/soc.nb10.h10.3.pkl'
     # visualize_tabs(tab_file_dir, 'bert', 'soc_reg_bal_3')

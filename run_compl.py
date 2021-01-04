@@ -19,7 +19,6 @@ Running BERT finetuning & evaluation on hate speech classification datasets.
 Integrated with SOC explanation regularization
 
 """
-
 from __future__ import absolute_import, division, print_function
 
 import argparse
