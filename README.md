@@ -48,11 +48,11 @@ explanation result is saved in `output_dir`
 
 Example of Sequencial Explanation
 
-![fig_8.png](SOC%2047f0b91037ca46248bde3f5380e83ce0/fig_8.png)
+![fig_8.png](img/seq_fig.png)
 
 Example of Hierarchical Explanation
 
-![fig_8.png](SOC%2047f0b91037ca46248bde3f5380e83ce0/fig_8%201.png)
+![fig_8.png](img/hiex_fig.png)
 
 # How to modify
 
