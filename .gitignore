@@ -1,9 +1,6 @@
 # boychaboy
 runs/
 figs/
-scripts/*.sh
-*.sh
-
 
 ### Python ###
 # Byte-compiled / optimized / DLL files
