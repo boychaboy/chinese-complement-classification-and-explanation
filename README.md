@@ -1,39 +1,81 @@
-# Chinese NLP explanation
-Based on code for [Contextualizing hate speech models with explanations](https://github.com/BrendanKennedy/contextualizing-hate-speech-models-with-explanations)for explaining Chinese Complement Classification Model
-Implementation for explaining [Chinese Complement Classification Model]
+# Chinese Complement (补语) Classification and Explanation
 
-## Commit Rules
-commmit convention [Conventional Commits/Angular convention](https://github.com/angular/angular/blob/22b96b9/CONTRIBUTING.md#type) 을 따릅니다.
+> This repository is a source code of a paper : *Automatic Prediction and Linguistic Interpretation of Chinese Directional Complements(趋向补语) Based on BERT Model*
 
-- build: Changes that affect the build system or external dependencies (example scopes: gulp, broccoli, npm)
-- ci: Changes to our CI configuration files and scripts (example scopes: Travis, Circle, BrowserStack, SauceLabs)
-- docs: Documentation only changes
-- feat: A new feature
-- fix: A bug fix
-- perf: A code change that improves performance
-- refactor: A code change that neither fixes a bug nor adds a feature
-- style: Changes that do not affect the meaning of the code (white-space, formatting, missing semi-colons, etc)
-- test: Adding missing tests or correcting existing tests
+- We used Sampling and Occlusion algorithm used in [Contextualizing Hate Speech Classifiers with Post-hoc Explanation](https://arxiv.org/pdf/2005.02439.pdf) 
+- This code is reimplementation of [original code](https://inklab.usc.edu/contextualize-hate-speech/)
 
-## Requirements
-```shell script
-conda create -n hiexpl-env python==3.7.4
-conda activate hiexpl-env
-# modify CUDA version as yours -> use cuda92(cuda90 : error!)
-conda install pytorch=0.4.1 cuda92 -c pytorch
-pip install nltk numpy scikit-learn scikit-image matplotlib torchtext
-# requirements from pytorch-transformers
-pip install tokenizers==0.0.11 boto3 filelock requests tqdm regex sentencepiece sacremoses
+# Environment
+
+- Python 3.6+
+- `pip install -r requirements.txt`
+
+# How to run
+
+## 1. Train
+
+`./script/run_train_buyu.sh` {gpu_id}
+
+- Automatically trains four 补语 classifiers (下去，下来，出来，起来)
+- You can change hyperparameters from script
+
+## 2. Explain
+
+`./script/run_explain_buyu.sh`
+
+runs explanation with the `test` data
+
+- `--output_dir` : directory of classifier model
+- `--lm_dir` : directory of language model (different with classifier)
+- `--nb_range` : window size to sample n
+- `--sample_n` : number of sentences to sample
+- `--hiex` : hierarchical explanation (default : sequential explanation)
+- `--output_filename` : name of the explanation file
+
+explanation result is saved in `output_dir`
+
+## 3. Visualize
+
+`./script/run_visualize_buyu.sh``
+
+- `--input_file` : file dir to visualize (*.txt, *.heix)
+- `--buyu` : buyu #
+- `--hiex` : true if hierarchical explanation
+
+---
+
+# Final output
+
+Example of Sequencial Explanation
+
+![fig_8.png](SOC%2047f0b91037ca46248bde3f5380e83ce0/fig_8.png)
+
+Example of Hierarchical Explanation
+
+![fig_8.png](SOC%2047f0b91037ca46248bde3f5380e83ce0/fig_8%201.png)
+
+# How to modify
+
+## 1. Prepare data
+
+```bash
+|----data/buyu
+|----|----train.json
+|----|----dev.json
+|----|----test.json
 ```
 
-## Running experiments
-See `scripts/` for shell scripts for running experiments. For example, to train a model on Gab dataset with SOC regularization, run
-```shell scripts
-chmod +x ./scripts/*
-./scripts/compl_binary.sh
-```
+- `Binary label`
 
-## Data
+## 2. Modify data processor
+
+`loader/*.py`
+
+- modfiy `class *Processor` 
+
+---
+
+
 
 ## Reference
 
