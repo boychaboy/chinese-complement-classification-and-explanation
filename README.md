@@ -14,14 +14,14 @@
 
 ## 1. Train
 
-`./script/run_train_buyu.sh` {gpu_id}
+`./scripts/run_train_buyu.sh` {gpu_id}
 
 - Automatically trains four 补语 classifiers (下去，下来，出来，起来)
 - You can change hyperparameters from script
 
 ## 2. Explain
 
-`./script/run_explain_buyu.sh`
+`./scripts/run_explain_buyu.sh`
 
 runs explanation with the `test` data
 
@@ -36,7 +36,7 @@ explanation result is saved in `output_dir`
 
 ## 3. Visualize
 
-`./script/run_visualize_buyu.sh``
+`./scripts/run_visualize_buyu.sh``
 
 - `--input_file` : file dir to visualize (*.txt, *.heix)
 - `--buyu` : buyu #
