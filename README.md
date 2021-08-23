@@ -7,21 +7,20 @@
 
 # Environment
 
-- Python 3.6+
-- `pip install -r requirements.txt`
+`conda create -f environment.yaml`
+`conda activate soc_env`
 
 # How to run
 
 ## 1. Train
 
-`./scripts/run_train_buyu.sh` {gpu_id}
-
+`./scripts/run_train_buyu.sh {gpu_id}` 
 - Automatically trains four 补语 classifiers (下去，下来，出来，起来)
 - You can change hyperparameters from script
 
 ## 2. Explain
 
-`./scripts/run_explain_buyu.sh`
+`./scripts/run_explain_buyu.sh {gpu_id}`
 
 runs explanation with the `test` data
 
