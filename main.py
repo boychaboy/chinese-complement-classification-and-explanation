@@ -48,7 +48,7 @@ from bert.modeling import BertForSequenceClassification, BertConfig
 from bert.tokenization import BertTokenizer
 from bert.optimization import BertAdam, WarmupLinearSchedule
 
-from loader import GabProcessor, WSProcessor, NytProcessor, ComplProcessor, ComplBinProcessor, convert_examples_to_features
+from loader import BuyuProcessor, convert_examples_to_features
 from utils.config import configs, combine_args
 
 # for hierarchical explanation algorithms
@@ -320,7 +320,7 @@ def main():
         raise ValueError("Task not found: %s" % (task_name))
 
     tokenizer = BertTokenizer.from_pretrained(args.bert_model, do_lower_case=args.do_lower_case)
-    processor = processors[task_name](configs, tokenizer=tokenizer, complement = args.complement)
+    processor = processors[task_name](configs, tokenizer=tokenizer, buyu = args.buyu)
     output_mode = output_modes[task_name]
 
     label_list = processor.get_labels()
