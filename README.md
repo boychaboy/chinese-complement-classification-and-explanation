@@ -1,6 +1,6 @@
 # Chinese Complement (补语) Classification and Explanation
 
-> This repository is a source code of a paper : *Automatic Prediction and Linguistic Interpretation of Chinese Directional Complements(趋向补语) Based on BERT Model*
+Official repository for **[Automatic Prediction and Linguistic Interpretation of Chinese Directional Complements(趋向补语) Based on BERT Model](https://link.springer.com/chapter/10.1007/978-3-031-06703-7_31)** at Chinese Lexical Semantics Workshop 2021
 
 - We used Sampling and Occlusion algorithm used in [Contextualizing Hate Speech Classifiers with Post-hoc Explanation](https://arxiv.org/pdf/2005.02439.pdf) 
 - This code is reimplementation of [original code](https://inklab.usc.edu/contextualize-hate-speech/)
