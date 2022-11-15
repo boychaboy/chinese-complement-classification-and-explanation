@@ -2,7 +2,7 @@
 
 Official repository for **[Automatic Prediction and Linguistic Interpretation of Chinese Directional Complements(趋向补语) Based on BERT Model](https://link.springer.com/chapter/10.1007/978-3-031-06703-7_31)** at Chinese Lexical Semantics Workshop 2021
 
-- We used Sampling and Occlusion algorithm used in [Contextualizing Hate Speech Classifiers with Post-hoc Explanation](https://arxiv.org/pdf/2005.02439.pdf) 
+- Authors: Younghoon Jeong, Ming Yue Li, Su Min Kang, Yun Kyung Eum, Byeong Kwu Kang
 - This code is reimplementation of [original code](https://inklab.usc.edu/contextualize-hate-speech/)
 
 # Environment
